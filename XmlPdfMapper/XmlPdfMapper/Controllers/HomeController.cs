@@ -24,6 +24,10 @@ namespace XmlPdfMapper.Controllers
     public class HomeController : Controller
     {
 
+        public static string pdfPath;
+        public static string xmlPath;
+
+
         public ActionResult Index()
         {
             //This is jsut a hard coded in path to a XFA based pdf (this should be change to your specific path)
@@ -53,12 +57,16 @@ namespace XmlPdfMapper.Controllers
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
             //Loads a XML document(hard coded right now) and split them by new line
             //This is jsut a hard coded in path to a XFA based pdf (this should be change to your specific path)
-            XDocument x = XDocument.Load(@"C:\Users\jag27\Documents\Personal\Infosys\AllState\Projects\XmlPdfMapper2\XmlPdfMapper\XmlPdfMapper\Assets\XmlExample.xml");
 
-            var xmlArr = x.ToString().Split('\n');
+            if (String.IsNullOrEmpty(xmlPath)) ViewBag.Xml = new string[0] ;
+            else
+            {
+                XDocument x = XDocument.Load(xmlPath);
 
-            ViewBag.Xml = xmlArr;
+                var xmlArr = x.ToString().Split('\n');
 
+                ViewBag.Xml = xmlArr;
+            }
 
 
             return View();
@@ -66,12 +74,53 @@ namespace XmlPdfMapper.Controllers
 
         //Opens and read a pdf file(hard coded right now)
         public FileStreamResult GetPdf() {
-            //This is jsut a hard coded in path to a XFA based pdf (this should be change to your specific path)
-            FileStream fs = new FileStream(@"C:\Users\jag27\Documents\Personal\Infosys\AllState\Projects\XmlPdfMapper2\XmlPdfMapper\XmlPdfMapper\Assets\PdfFormExample.pdf", FileMode.Open, FileAccess.Read);
+
+            if (String.IsNullOrEmpty(pdfPath)) return null;
+            FileStream fs = new FileStream(pdfPath, FileMode.Open, FileAccess.Read);
             return File(fs, "application/pdf");
         }
 
 
+        [HttpPost]
+        public ActionResult UploadPdf(HttpPostedFileBase file) {
+            try
+            {
+                if (file.ContentLength > 0)
+                {
+                    string _FileName = Path.GetFileName(file.FileName);
+                    string _path = Path.Combine(Server.MapPath("~/UploadedFiles"), _FileName);
+                    file.SaveAs(_path);
+                    pdfPath = _path;   
+                }
 
+                return Redirect("Index");
+            }
+            catch {
+                return Redirect("Index");
+
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult UploadXml(HttpPostedFileBase xmlfile) {
+
+            try
+            {
+                if (xmlfile.ContentLength > 0)
+                {
+                    string _FileName = Path.GetFileName(xmlfile.FileName);
+                    string _path = Path.Combine(Server.MapPath("~/UploadedFiles"), _FileName);
+                    xmlfile.SaveAs(_path);
+                    xmlPath = _path;
+                }
+
+                return Redirect("Index");
+            }
+            catch
+            {
+                return Redirect("Index");
+            }
+        }
     }
 }

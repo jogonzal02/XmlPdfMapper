@@ -1,25 +1,41 @@
 ﻿
-@Styles.Render("~/Content/pdfxml.css")
+@Styles.Render("~/Content/Site.css")
 
 <div class="PdfContainer split left">
-    <input type="file"
-           id="pdffile"
-           accept=".pdf"
-           style="position: absolute; padding: 50px; float: right; clear: both;"/>
+
+    @using (Html.BeginForm("UploadPdf", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+
+        <input type="file"
+               id="file"
+               name="file"
+               accept=".pdf"/>
+
+        <input class="btn" type="submit" name="Submit" value="Upload PDF" />
+
+    }
     <div class="elements">
         <object class="pdf" data="@Url.Action("GetPDF")" type="application/pdf"></object>
     </div>
 </div>
 
 <div class="xmlContainer split right">
-    <input type="file"
-           id="xmlfile"
-           accept=".xml"
-           style="position: absolute; padding:50px; float: right; clear: both;"/>
+
+    @using (Html.BeginForm("UploadXml", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file"
+               id="xmlfile"
+               name="xmlfile"
+               accept=".xml" />
+
+        <input class="btn" type="submit" name="Submit" value="Upload XML" />
+    }
+
 
     <div class="elements">
-        @foreach (var x in ViewBag.Xml){
-        <pre>@x</pre>
+        @foreach (var x in ViewBag.Xml)
+        {
+            <pre>@x</pre>
         }
     </div>
 </div>
