@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<planes_for_sale>
+   <ad>
+      <year></year>
+      <make></make>
+      <model></model>
+      <color></color>
+      <description></description>
+      <price></price>
+      <seller></seller>
+      <location>
+         <city></city>
+         <state></state>
+      </location>
+   </ad>
+</planes_for_sale>
