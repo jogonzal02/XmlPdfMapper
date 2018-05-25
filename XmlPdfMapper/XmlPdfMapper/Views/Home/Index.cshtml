@@ -15,7 +15,11 @@
 
     }
     <div class="elements">
-        <object class="pdf" data="@Url.Action("GetPDF")" type="application/pdf"></object>
+        @foreach (var field in ViewBag.Pdf)
+        {
+            <label for=@field>@field</label>
+            <input  type="text" name=@field /><br>
+        }
     </div>
 </div>
 

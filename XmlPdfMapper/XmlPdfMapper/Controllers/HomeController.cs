@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
+using System.Diagnostics;
 
 /// <TODO>
 ///     For now
@@ -30,54 +31,44 @@ namespace XmlPdfMapper.Controllers
 
         public ActionResult Index()
         {
-            //This is jsut a hard coded in path to a XFA based pdf (this should be change to your specific path)
-            var src = @"C:\Users\jag27\Documents\Personal\Infosys\AllState\Projects\XmlPdfMapper2\XmlPdfMapper\XmlPdfMapper\Assets\ABJ45A1AL.pdf";
 
-            //Reads the PDF
-            PdfReader reader = new PdfReader(src);
-            //Grabs the forms
-            XfaForm xfa = new XfaForm(reader);
-
-            //Grab the dataset noe
-            XmlNode node = xfa.DatasetsNode;
-            reader.Close();
-
-            //Write the dataset node into a string builder and store it into a ViewBag
-            var sb = new StringBuilder(4000);
-            var Xsettings = new XmlWriterSettings() { Indent = true };
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(node.OuterXml);
-            using (var writer = XmlWriter.Create(sb, Xsettings))
+            if (String.IsNullOrEmpty(pdfPath)) { ViewBag.Pdf = new string[0]; }
+            else
             {
-                doc.WriteTo(writer);
-            }
-            ViewBag.Form = sb.ToString();
+                //Reads the PDF
+                PdfReader reader = new PdfReader(pdfPath);
 
+                //Grabs the xfa forms
+                XfaForm xfa = new XfaForm(reader);
+
+                //Grab the dataset node
+                string xmllist = xfa.DatasetsNode.InnerXml;
+                XDocument doc = XDocument.Parse(xmllist);
+
+                //grab the name of all the dataset nodes
+                var result = doc.Descendants().Select(x => x.Name).ToList();
+
+                reader.Close();
+
+                ViewBag.Pdf = result;
+
+            }
+     
 
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
             //Loads a XML document(hard coded right now) and split them by new line
-            //This is jsut a hard coded in path to a XFA based pdf (this should be change to your specific path)
 
-            if (String.IsNullOrEmpty(xmlPath)) ViewBag.Xml = new string[0] ;
+            if (String.IsNullOrEmpty(xmlPath)) ViewBag.Xml = new string[0];
             else
             {
+
                 XDocument x = XDocument.Load(xmlPath);
-
                 var xmlArr = x.ToString().Split('\n');
-
                 ViewBag.Xml = xmlArr;
             }
 
 
             return View();
-        }
-
-        //Opens and read a pdf file(hard coded right now)
-        public FileStreamResult GetPdf() {
-
-            if (String.IsNullOrEmpty(pdfPath)) return null;
-            FileStream fs = new FileStream(pdfPath, FileMode.Open, FileAccess.Read);
-            return File(fs, "application/pdf");
         }
 
 
