@@ -53,72 +53,69 @@
 
 </style>
 
-<div class="PdfContainer split left">
-
-    @using (Html.BeginForm("UploadPdf", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-
-        <input type="file"
-               id="file"
-               name="file"
-               accept=".pdf" />
-
-        <input class="btn" type="submit" name="Submit" value="Upload PDF" />
-
-    }
-
-    <div class="elements form-group">
-
-
-            @using (Html.BeginForm("Compute", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+<div class="row">
+    <div class="col-md-3 split left" >
+        <div>
+            @using (Html.BeginForm("UploadPdf", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
-
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Create" class="btn btn-default" />
+                <input type="file"
+                       id="file"
+                       name="file"
+                       accept=".pdf"/>
+                <input class="btn" type="submit" name="Submit" value="Upload PDF"/>
+            }
+        </div>
+        <div class="panel panel-primary">
+            @using (Html.BeginForm("Compute", "Home", FormMethod.Post, new { enctype = "multiple/form-data"}))
+            {
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div>
+                        <input type="submit" value="Creater Mapping" class="btn btn-default btn-sm pull-right" />
                     </div>
+                    <h4>PDF Panel</h4>
                 </div>
+                <div class="panel-body" style="overflow-y:auto;">
 
+                            @for (var i = 0; i < Model.Count; i++)
+                            {
+                                <div class="row">
+                                    @Html.Label(Model[i].PdfName)
+                                    @Html.TextBoxFor(model => Model[i].XmlXpath, null, htmlAttributes: new { @class = "droppable" })
+                                    @Html.HiddenFor(model => Model[i].PdfName)
+                                    @Html.HiddenFor(model => Model[i].FileName)
+                                </div>
 
-                for (var i = 0; i < Model.Count; i++)
-                {
-                    @*<label class="input-lg" for=@field>@field</label><br>
-                    <input class="droppable"/><br>*@
-
-                    @Html.Label(Model[i].PdfName, htmlAttributes: new { @class = "control-label col-md-2" })
-                    @Html.TextBoxFor(model => Model[i].XmlXpath, null, htmlAttributes: new { @class = "form-control droppable" })
-                    @Html.HiddenFor(model => Model[i].PdfName)
-                    @Html.HiddenFor(model => Model[i].FileName)
-
-
-                }
+                            }
+                </div>
+            </div>
             }
-    </div>
-</div>
-
-<div class="xmlContainer split right">
-
-    @using (Html.BeginForm("UploadXml", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        <input type="file"
-               id="xmlfile"
-               name="xmlfile"
-               accept=".xml" />
-
-        <input class="btn" type="submit" name="Submit" value="Upload XML" />
-    }
-
-
-    <div class="elements">
-        <ul id="xmlList">
-
-            @foreach (var x in ViewBag.Presentation)
+   </div>
+    <div class="col-md-3 split right">
+        <div>
+            @using (Html.BeginForm("UploadXml", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
-                <li class="draggable">@x</li>
+                <input type="file"
+                       id="xmlfile"
+                       name="xmlfile"
+                       accept=".xml"/>
+                 <input class="btn" type="submit" name="Submit" value="Upload XML"/>
             }
-        </ul>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4>XML Panel</h4>
+            </div>
+            <div class="panel-body" style="overflow-y:auto">
+                <ul id="xmlList">
+                    @foreach (var x in ViewBag.Presentation)
+                    {
+                        <li class="draggable">@x</li>
+                    }
+                </ul>
+            </div>
+        </div>
     </div>
-
 </div>
 
 
