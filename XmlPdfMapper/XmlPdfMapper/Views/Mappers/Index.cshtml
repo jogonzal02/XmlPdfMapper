@@ -1,0 +1,53 @@
+﻿@model IEnumerable<XmlPdfMapper.Models.Mapper>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PdfName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.XmlXpath)
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PdfName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.XmlXpath)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.MapperId }) |
+                @Html.ActionLink("Details", "Details", new { id=item.MapperId }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.MapperId })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

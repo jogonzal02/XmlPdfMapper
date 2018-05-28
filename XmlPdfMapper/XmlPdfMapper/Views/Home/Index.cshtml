@@ -1,5 +1,57 @@
 ﻿
-@Styles.Render("~/Content/Site.css")
+@model List<XmlPdfMapper.Models.Mapper>
+
+
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.12.4.js"></script>
+<script src="~/Scripts/modernizr-2.6.2.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+
+
+<style>
+    /* Split the screen in half */
+
+    li {
+        white-space: pre-wrap;
+        list-style-type: none;
+        display: block;
+    }
+    .split {
+        height: 100%;
+        width: 50%;
+        position: fixed;
+        top: 0;
+        overflow-x: hidden;
+        padding-top: 20px;
+    }
+
+    /* Control the left side */
+    .left {
+        left: 0;
+    }
+
+    /* Control the right side */
+    .right {
+        right: 0;
+    }
+
+    .xmlContainer pre {
+        background-color: white;
+    }
+
+    .pdf {
+        width: 100%;
+        height: 100%;
+    }
+
+    .elements {
+        position: absolute;
+        top: 20%;
+        width: 100%;
+        height: 100%;
+    }
+
+</style>
 
 <div class="PdfContainer split left">
 
@@ -9,17 +61,38 @@
         <input type="file"
                id="file"
                name="file"
-               accept=".pdf"/>
+               accept=".pdf" />
 
         <input class="btn" type="submit" name="Submit" value="Upload PDF" />
 
     }
-    <div class="elements">
-        @foreach (var field in ViewBag.Pdf)
-        {
-            <label for=@field>@field</label>
-            <input  type="text" name=@field /><br>
-        }
+
+    <div class="elements form-group">
+
+
+            @using (Html.BeginForm("Compute", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
+
+
+                for (var i = 0; i < Model.Count; i++)
+                {
+                    @*<label class="input-lg" for=@field>@field</label><br>
+                    <input class="droppable"/><br>*@
+
+                    @Html.Label(Model[i].PdfName, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.TextBoxFor(model => Model[i].XmlXpath, null, htmlAttributes: new { @class = "form-control droppable" })
+                    @Html.HiddenFor(model => Model[i].PdfName)
+                    @Html.HiddenFor(model => Model[i].FileName)
+
+
+                }
+            }
     </div>
 </div>
 
@@ -37,12 +110,54 @@
 
 
     <div class="elements">
-        @foreach (var x in ViewBag.Xml)
-        {
-            <pre>@x</pre>
-        }
+        <ul id="xmlList">
+
+            @foreach (var x in ViewBag.Presentation)
+            {
+                <li class="draggable">@x</li>
+            }
+        </ul>
     </div>
+
 </div>
+
+
+<script>
+    $(document).ready(
+        function () {
+            var ul = document.getElementById("xmlList");
+
+            var xmlDoc = @Html.Raw(ViewBag.Xml);
+
+
+            $("li").draggable({ revert: "invalid" });
+
+            $("input").droppable({
+                drop: function (event, ui) {
+                    $(this).val(parseXML(ui.draggable.text()));
+                }
+            });
+
+            function parseXML(node) {
+                var regex = "\</\?(.*?)\>";
+                var tag = node.match(regex)[1];
+                var result = "";
+
+                for (i = 0; i < xmlDoc.length; i++) {
+                    if (xmlDoc[i].Name === tag) {
+                        result = xmlDoc[i].Xpath;
+                        break;
+                    }
+                }
+
+                return result;
+
+            }
+        }
+    );
+
+</script>
+
 
 
 

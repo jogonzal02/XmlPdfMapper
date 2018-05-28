@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
 using System.Diagnostics;
+using XmlPdfMapper.Models;
+using Newtonsoft.Json;
 
 /// <TODO>
 ///     For now
@@ -32,6 +34,8 @@ namespace XmlPdfMapper.Controllers
         public ActionResult Index()
         {
 
+            List<Mapper> result = new List<Mapper>();
+
             if (String.IsNullOrEmpty(pdfPath)) { ViewBag.Pdf = new string[0]; }
             else
             {
@@ -46,9 +50,19 @@ namespace XmlPdfMapper.Controllers
                 XDocument doc = XDocument.Parse(xmllist);
 
                 //grab the name of all the dataset nodes
-                var result = doc.Descendants().Select(x => x.Name).ToList();
+                var pdfNodes = doc.Descendants().Select(x => x.Name.ToString()).ToList();
 
                 reader.Close();
+
+               
+                foreach (var node in pdfNodes) {
+                    result.Add(new Mapper()
+                    {
+                        FileName = pdfPath,
+                        PdfName = node,
+
+                    });
+                }
 
                 ViewBag.Pdf = result;
 
@@ -58,17 +72,43 @@ namespace XmlPdfMapper.Controllers
             //---------------------------------------------------------------------------------------------------------------------------------------------------------
             //Loads a XML document(hard coded right now) and split them by new line
 
-            if (String.IsNullOrEmpty(xmlPath)) ViewBag.Xml = new string[0];
+            if (String.IsNullOrEmpty(xmlPath)) ViewBag.Presentation = new string[0];
             else
             {
 
-                XDocument x = XDocument.Load(xmlPath);
-                var xmlArr = x.ToString().Split('\n');
-                ViewBag.Xml = xmlArr;
+                XDocument xml = XDocument.Load(xmlPath);
+
+                string[] pres = xml.ToString().Split('\n');
+
+                ViewBag.Presentation = pres;
+
+                List<Node> nodeList = new List<Node>();
+
+                foreach (XElement node in xml.Descendants())
+                {
+                    Node n = new Node()
+                    {
+                        Name = node.Name.ToString(),
+                        Xpath = findPath(node)
+                    };
+                    nodeList.Add(n);
+                }
+
+                Debug.WriteLine(pres.Length + " : " + nodeList.Count);
+                ViewBag.Xml = JsonConvert.SerializeObject(nodeList);
             }
 
 
-            return View();
+            return View(result);
+        }
+
+        public ActionResult Compute(List<Mapper> map) {
+            foreach (var item in map)
+            {
+                Debug.WriteLine(item.PdfName + " " + item.XmlXpath);
+            }
+
+            return Redirect("Index");
         }
 
 
@@ -113,5 +153,18 @@ namespace XmlPdfMapper.Controllers
                 return Redirect("Index");
             }
         }
+
+        [NonAction]
+        public string findPath(XElement node) {
+
+            string xPath = node.Name.ToString();
+
+            while (node.Parent != null) {
+                xPath = node.Parent.Name + "/" + xPath;
+                node = node.Parent;
+            }
+            return xPath;
+
+        } 
     }
 }

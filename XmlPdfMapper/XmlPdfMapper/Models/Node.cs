@@ -5,7 +5,9 @@ using System.Web;
 
 namespace XmlPdfMapper.Models
 {
-    public class XmlModel
-    {
+    public class Node
+    { 
+        public string Name { get; set; }
+        public string Xpath { get; set; }
     }
 }
