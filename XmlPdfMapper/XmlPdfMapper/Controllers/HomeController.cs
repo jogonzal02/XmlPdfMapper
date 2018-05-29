@@ -26,6 +26,7 @@ namespace XmlPdfMapper.Controllers
 {
     public class HomeController : Controller
     {
+        private MapperContext db = new MapperContext();
 
         public static string pdfPath;
         public static string xmlPath;
@@ -103,10 +104,18 @@ namespace XmlPdfMapper.Controllers
         }
 
         public ActionResult Compute(List<Mapper> map) {
-            foreach (var item in map)
+
+            if (map == null) return Redirect("Index");
+            foreach (var field in map)
             {
-                Debug.WriteLine(item.PdfName + " " + item.XmlXpath);
+                if (!String.IsNullOrEmpty(field.XmlXpath))
+                {
+                    db.Mappers.Add(field);
+                }
+
             }
+
+            db.SaveChanges();
 
             return Redirect("Index");
         }

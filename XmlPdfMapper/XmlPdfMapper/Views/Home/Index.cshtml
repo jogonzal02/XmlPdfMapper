@@ -80,7 +80,7 @@
                             {
                                 <div class="row">
                                     @Html.Label(Model[i].PdfName)
-                                    @Html.TextBoxFor(model => Model[i].XmlXpath, null, htmlAttributes: new { @class = "droppable" })
+                                    @Html.TextBoxFor(model => Model[i].XmlXpath, null, htmlAttributes: new { @class = "droppable" , style="cursor: pointer; width: 400px;" })
                                     @Html.HiddenFor(model => Model[i].PdfName)
                                     @Html.HiddenFor(model => Model[i].FileName)
                                 </div>
@@ -108,7 +108,7 @@
                 <ul id="xmlList">
                     @foreach (var x in ViewBag.Presentation)
                     {
-                        <li class="draggable">@x</li>
+                        <li class="draggable" style="cursor:pointer; width:350px;">@x</li>
                     }
                 </ul>
             </div>
@@ -128,6 +128,7 @@
             $("li").draggable({ revert: "invalid" });
 
             $("input").droppable({
+                accept:"li",
                 drop: function (event, ui) {
                     $(this).val(parseXML(ui.draggable.text()));
                 }
