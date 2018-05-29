@@ -59,7 +59,7 @@ namespace XmlPdfMapper.Controllers
                 foreach (var node in pdfNodes) {
                     result.Add(new Mapper()
                     {
-                        FileName = pdfPath,
+                        FileName = Path.GetFileName(pdfPath),
                         PdfName = node,
 
                     });
@@ -106,11 +106,14 @@ namespace XmlPdfMapper.Controllers
         public ActionResult Compute(List<Mapper> map) {
 
             if (map == null) return Redirect("Index");
+            List<Mapper> result = new List<Mapper>();
             foreach (var field in map)
             {
                 if (!String.IsNullOrEmpty(field.XmlXpath))
                 {
                     db.Mappers.Add(field);
+                    result.Add(field);
+                    
                 }
 
             }
@@ -119,7 +122,9 @@ namespace XmlPdfMapper.Controllers
             xmlPath = null;
             pdfPath = null;
 
-            return Redirect("Index");
+            //return Redirect("Index");
+            return View(result);
+
         }
 
 

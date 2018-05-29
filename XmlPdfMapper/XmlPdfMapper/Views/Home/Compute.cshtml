@@ -1,0 +1,41 @@
+﻿@model IEnumerable<XmlPdfMapper.Models.Mapper>
+
+@{
+    ViewBag.Title = "Compute";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Compute</h2>
+
+<p>
+    @Html.ActionLink("Back", "Index")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FileName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PdfName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.XmlXpath)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.FileName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PdfName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.XmlXpath)
+        </td>
+    </tr>
+}
+
+</table>

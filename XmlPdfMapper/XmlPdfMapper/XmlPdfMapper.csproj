@@ -249,6 +249,7 @@
     <Content Include="Views\Mappers\Details.cshtml" />
     <Content Include="Views\Mappers\Edit.cshtml" />
     <Content Include="Views\Mappers\Index.cshtml" />
+    <Content Include="Views\Home\Compute.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
