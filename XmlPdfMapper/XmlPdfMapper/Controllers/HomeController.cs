@@ -116,6 +116,8 @@ namespace XmlPdfMapper.Controllers
             }
 
             db.SaveChanges();
+            xmlPath = null;
+            pdfPath = null;
 
             return Redirect("Index");
         }
